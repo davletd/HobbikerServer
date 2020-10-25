@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HobbikerServer.Models
 {
-	public class TodoContext : DbContext
+	public class CourseContext : DbContext
 	{
-			public TodoContext(DbContextOptions<TodoContext> options)
+			public CourseContext(DbContextOptions<CourseContext> options)
 					: base(options)
 			{
 			}
 
-			public DbSet<CourseItem> TodoItems { get; set; }
+			public DbSet<CourseItem> CourseItems { get; set; }
 	}
 }
