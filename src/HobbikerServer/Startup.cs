@@ -9,31 +9,29 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using HobbikerServer.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace HobbikerServer
 {
     public class Startup
     {
-        public Startup(IWebHostEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CourseContext>(opt =>
                opt.UseSqlServer(Configuration.GetConnectionString("HobbikerDB")));
+            // services.AddDbContext<CourseContext>(opt =>
+            //    opt.UseInMemoryDatabase("CourseItems"));   
             // Add framework services.
-            services.AddMvc(option => option.EnableEndpointRouting = false);
-            services.AddSwaggerGen();
+            services.AddControllers();
+            //services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,19 +39,31 @@ namespace HobbikerServer
         {
             // loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             // loggerFactory.AddDebug();
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            if (env.IsDevelopment())
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
-            });
+                app.UseDeveloperExceptionPage();
+            }
 
-            app.UseMvc();
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            // app.UseSwagger();
+
+            // // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // // specifying the Swagger JSON endpoint.
+            // app.UseSwaggerUI(c =>
+            // {
+            //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            //     c.RoutePrefix = string.Empty;
+            // });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
