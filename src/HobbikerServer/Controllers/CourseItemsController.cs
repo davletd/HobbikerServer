@@ -21,7 +21,7 @@ namespace HobbikerServer.Controllers
 			}
 
 			[HttpGet("{id}")]
-			public async Task<ActionResult<CourseItem>> GetCourseItem(long id)
+			public async Task<ActionResult<CourseItem>> GetCourseItem(int id)
 			{
 					var courseItem = await _context.CourseItems.FindAsync(id);
 
@@ -34,7 +34,7 @@ namespace HobbikerServer.Controllers
 			}
 
 			[HttpPut("{id}")]
-			public async Task<IActionResult> PutCourseItem(long id, [FromBody]CourseItem courseItem)
+			public async Task<IActionResult> PutCourseItem(int id, [FromBody]CourseItem courseItem)
 			{
 					if (id != courseItem.Id)
 					{
@@ -72,7 +72,7 @@ namespace HobbikerServer.Controllers
             return CreatedAtAction(nameof(GetCourseItem), new { id = courseItem.Id }, courseItem);
         }
 
-			private bool CourseItemExists(long id)
+			private bool CourseItemExists(int id)
 			{
 					return _context.CourseItems.Any(e => e.Id == id);
 			}
