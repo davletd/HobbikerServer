@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using HobbikerServer.Models;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace HobbikerServer
 {
@@ -31,7 +32,11 @@ namespace HobbikerServer
             //    opt.UseInMemoryDatabase("CourseItems"));   
             // Add framework services.
             services.AddControllers();
-            //services.AddSwaggerGen();
+            services.AddSwaggerGen(swagger =>
+            {
+                swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "My API" });
+            });
+            services.AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,19 +51,20 @@ namespace HobbikerServer
 
             app.UseHttpsRedirection();
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
+            
             app.UseRouting();
 
             app.UseAuthorization();
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            // app.UseSwagger();
-
-            // // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // // specifying the Swagger JSON endpoint.
-            // app.UseSwaggerUI(c =>
-            // {
-            //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            //     c.RoutePrefix = string.Empty;
-            // });
 
             app.UseEndpoints(endpoints =>
             {
