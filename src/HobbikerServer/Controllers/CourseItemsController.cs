@@ -36,6 +36,20 @@ namespace HobbikerServer.Controllers
 					return courseItem;
 			}
 
+			[EnableCors("_myAllowSpecificOrigins")]
+			[HttpGet]
+			public async Task<ActionResult<CourseItem[]>> GetAllCourseItems()
+			{
+					var courseItems = _context.CourseItems.ToArray();
+
+					if (courseItems == null)
+					{
+							return NotFound();
+					}
+
+					return courseItems;
+			}
+
 			[HttpPut("{id}")]
 			public async Task<IActionResult> PutCourseItem(int id, [FromBody]CourseItem courseItem)
 			{
