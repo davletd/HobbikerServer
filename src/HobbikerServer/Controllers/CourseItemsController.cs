@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 using HobbikerServer.Models;
 
 namespace HobbikerServer.Controllers
 {
+	[EnableCors("_myAllowSpecificOrigins")]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class CourseItemsController : ControllerBase
@@ -20,6 +22,7 @@ namespace HobbikerServer.Controllers
 					_context = context;
 			}
 
+			[EnableCors("_myAllowSpecificOrigins")]
 			[HttpGet("{id}")]
 			public async Task<ActionResult<CourseItem>> GetCourseItem(int id)
 			{
